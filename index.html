@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>歷史第5課 西力衝擊下的晚清變革</title>
+    <title>歷史第五課 西力衝擊下的晚清變革</title>
     <link href="https://fonts.googleapis.com/css2?family=CwTeXYen:wght@400;600&display=swap" rel="stylesheet">
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
     <style>
@@ -492,6 +492,9 @@
         const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20];
         const ITEMS_PER_ROW = 4;
         const PLAYLIST = ['sounds/bgm1.mp3', 'sounds/bgm2.mp3', 'sounds/bgm3.mp3'];
+        
+        // 🟢 設定資料儲存前綴，避免與地理 App 衝突
+        const APP_PREFIX = 'history_';
 
         let currentTrackIndex = 0;
         let isPlaying = false;
@@ -512,7 +515,8 @@
         fetch('questions.json').then(res => res.json()).then(data => { allQuestions = data; renderQuickLogin(); }).catch(e => console.error(e));
 
         // --- 資料儲存 Key 產生器 (隔離使用者) ---
-        function getUserKey(key) { return userName + '_' + key; }
+        // 🟢 修改: 加上 APP_PREFIX
+        function getUserKey(key) { return APP_PREFIX + userName + '_' + key; }
 
         function selectAvatar(filename, element) {
             currentAvatar = filename;
@@ -520,7 +524,11 @@
             element.classList.add('selected');
         }
 
-        function getSavedUsers() { return JSON.parse(localStorage.getItem('savedUsers')) || []; }
+        // 🟢 修改: 讀取帶有前綴的 savedUsers
+        function getSavedUsers() { 
+            return JSON.parse(localStorage.getItem(APP_PREFIX + 'savedUsers')) || []; 
+        }
+
         function renderQuickLogin() {
             let users = getSavedUsers();
             let container = document.getElementById('quick-login-area');
@@ -546,25 +554,34 @@
         }
         function deleteUser(name) {
             if (!confirm(`確定要刪除「${name}」的所有功名資料嗎？\n(包含紀錄、錯題本)`)) return;
-            localStorage.removeItem(name + '_mistakeBank');
-            localStorage.removeItem(name + '_quizHistory');
-            localStorage.removeItem(name + '_quizProgress');
+            
+            // 🟢 修改: 刪除時加上前綴
+            localStorage.removeItem(APP_PREFIX + name + '_mistakeBank');
+            localStorage.removeItem(APP_PREFIX + name + '_quizHistory');
+            localStorage.removeItem(APP_PREFIX + name + '_quizProgress');
+            
             let users = getSavedUsers();
             users = users.filter(u => (typeof u === 'string' ? u : u.name) !== name);
-            localStorage.setItem('savedUsers', JSON.stringify(users));
+            
+            // 🟢 修改: 寫入時加上前綴
+            localStorage.setItem(APP_PREFIX + 'savedUsers', JSON.stringify(users));
             renderQuickLogin();
         }
         function loginAndStart() {
             const inputName = document.getElementById('username').value.trim();
             if (!inputName) { alert("請留下大名！"); return; }
             userName = inputName;
-            localStorage.setItem('quizUserName', userName);
-            localStorage.setItem('quizUserAvatar', currentAvatar);
+            
+            // 🟢 修改: 寫入時加上前綴
+            localStorage.setItem(APP_PREFIX + 'quizUserName', userName);
+            localStorage.setItem(APP_PREFIX + 'quizUserAvatar', currentAvatar);
 
             let users = getSavedUsers();
             users = users.filter(u => (typeof u === 'string' ? u : u.name) !== userName);
             users.push({ name: userName, avatar: currentAvatar });
-            localStorage.setItem('savedUsers', JSON.stringify(users));
+            
+            // 🟢 修改: 寫入時加上前綴
+            localStorage.setItem(APP_PREFIX + 'savedUsers', JSON.stringify(users));
 
             if (!isPlaying) playMusic();
             goToLevelScreen();
