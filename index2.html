@@ -876,7 +876,7 @@
 
                 // Options
                 let optionsHtml = '<div class="wf-options">';
-                q.options.forEach((opt, optIdx) => {
+                q.options.forEach(opt => {
                     let btnClass = 'wf-opt-btn';
                     let disabled = '';
                     
@@ -890,8 +890,7 @@
                         if(userSel === val && userSel !== correct) btnClass += ' wrong';
                     }
                     
-                    // 修改：傳遞 optIdx (索引) 而非字串，並確保 ID 傳遞正確
-                    optionsHtml += `<button class="${btnClass}" ${disabled} onclick="handleWaterfallAnswer('${q.id}', ${optIdx})">${opt}</button>`;
+                    optionsHtml += `<button class="${btnClass}" ${disabled} onclick="handleWaterfallAnswer('${q.id}', '${opt}')">${opt}</button>`;
                 });
                 optionsHtml += '</div>';
 
@@ -916,17 +915,10 @@
             window.scrollTo(0, 0);
         }
 
-        function handleWaterfallAnswer(qId, optIdx) {
-            // FIX: ID 型態可能不一致，只用 key 檢查鎖定狀態
+        function handleWaterfallAnswer(qId, option) {
             if(quizState.locked[qId]) return;
             
-            // FIX: 使用鬆散相等 (==) 查找，解決 HTML 屬性傳回字串 ID 與原始數字 ID 不匹配問題
-            const qData = allQuestions.find(q => q.id == qId);
-            if(!qData) return;
-
-            // FIX: 透過索引取得正確的選項文字
-            const option = qData.options[optIdx];
-            
+            const qData = allQuestions.find(q => q.id === qId);
             quizState.answers[qId] = option;
             quizState.locked[qId] = true;
             
@@ -934,7 +926,7 @@
             const selected = option.substring(0,3);
             
             // 取得卡片元素
-            const card = document.getElementById(`card-${qData.id}`); // 使用 qData.id 確保與建立時一致
+            const card = document.getElementById(`card-${qId}`);
 
             if(selected === correct) {
                 quizState.score++;
@@ -943,7 +935,7 @@
                 if(card) card.classList.add('card-correct'); // 立即變綠
             } else {
                 audioFail.play().catch(()=>{});
-                addToMistake(qData.id); // 使用原始 ID
+                addToMistake(qId);
                 if(card) card.classList.add('card-wrong'); // 立即變紅
             }
             
@@ -1031,21 +1023,18 @@
             // Remove from list (Mistake or Favorite)
             if(quizState.mode === 'mistake') {
                 let list = JSON.parse(localStorage.getItem(getUserKey('mistakeBank'))) || [];
-                // FIX: 使用 != 鬆散不相等，解決 ID 型態不一致無法刪除的問題
-                list = list.filter(x => x != id);
+                list = list.filter(x => x !== id);
                 localStorage.setItem(getUserKey('mistakeBank'), JSON.stringify(list));
                 quizState.qIds = list;
             } else if (quizState.mode === 'favorite') {
                 let list = JSON.parse(localStorage.getItem(getUserKey('favoriteBank'))) || [];
-                // FIX: 使用 != 鬆散不相等
-                list = list.filter(x => x != id);
+                list = list.filter(x => x !== id);
                 localStorage.setItem(getUserKey('favoriteBank'), JSON.stringify(list));
                 quizState.qIds = list;
             }
 
             // Remove visual element
-            // 嘗試兩種 ID 格式以防萬一
-            let card = document.getElementById(`card-${id}`);
+            const card = document.getElementById(`card-${id}`);
             if(card) card.remove();
             
             // FIX: Ensure this deletion is saved to current progress so it doesn't reappear on resume
