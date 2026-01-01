@@ -70,134 +70,6 @@
         .volume-slider { width: 60px; accent-color: var(--primary-color); cursor: pointer;}
         .mode-btn { border: 1px solid #a1887f; background: #fff; padding: 5px 10px; border-radius: 20px; font-size: 0.8em; cursor: pointer; display: flex; align-items: center; gap: 5px;}
         .mode-btn:hover { border-color: var(--primary-color); color: var(--primary-color); }
-        
-        /* AI Tutor Button Style */
-        .ai-tutor-btn {
-            background-color: var(--accent-color);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 20px;
-            font-weight: bold;
-            cursor: pointer;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-            transition: transform 0.2s;
-            margin-left: 10px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-        .ai-tutor-btn:hover {
-            transform: scale(1.05);
-            background-color: #e65100;
-        }
-
-        /* --- AI Chat Window --- */
-        #ai-chat-window {
-            position: fixed;
-            bottom: 20px;
-            right: 20px;
-            width: 350px;
-            height: 500px;
-            background: #fff;
-            border: 2px solid var(--primary-color);
-            border-radius: 12px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.3);
-            z-index: 99999;
-            display: none;
-            flex-direction: column;
-            overflow: hidden;
-            font-family: 'Noto Sans TC', sans-serif;
-            transition: all 0.3s ease;
-        }
-
-        .ai-header {
-            background: var(--primary-color);
-            color: #fff;
-            padding: 12px 15px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            font-weight: bold;
-            border-bottom: 2px solid #3e2723;
-        }
-        
-        .ai-header-title { display: flex; align-items: center; gap: 8px; }
-        .ai-close-btn { background: none; border: none; color: #fff; font-size: 1.5em; cursor: pointer; padding: 0 5px; line-height: 1; }
-        .ai-close-btn:hover { color: #ffccbc; }
-
-        .ai-messages {
-            flex: 1;
-            padding: 15px;
-            overflow-y: auto;
-            background: var(--bg-color); /* 使用宣紙背景色 */
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .ai-msg {
-            max-width: 80%;
-            padding: 10px 14px;
-            border-radius: 15px;
-            font-size: 0.95em;
-            line-height: 1.5;
-            word-wrap: break-word;
-            position: relative;
-        }
-        
-        .ai-msg.user {
-            align-self: flex-end;
-            background: var(--accent-color); /* 皇室金 */
-            color: #fff;
-            border-bottom-right-radius: 2px;
-            box-shadow: 1px 2px 5px rgba(0,0,0,0.1);
-        }
-        
-        .ai-msg.ai {
-            align-self: flex-start;
-            background: #fff;
-            border: 1px solid #d7ccc8;
-            color: var(--text-color);
-            border-bottom-left-radius: 2px;
-            box-shadow: 1px 2px 5px rgba(0,0,0,0.05);
-        }
-
-        .ai-input-area {
-            padding: 12px;
-            border-top: 1px solid #d7ccc8;
-            background: #fff;
-            display: flex;
-            gap: 8px;
-        }
-        
-        .ai-input {
-            flex: 1;
-            padding: 10px;
-            border: 1px solid #a1887f;
-            border-radius: 20px;
-            outline: none;
-            font-size: 1em;
-            font-family: 'Noto Sans TC', sans-serif;
-        }
-        .ai-input:focus { border-color: var(--primary-color); }
-        
-        .ai-send-btn {
-            background: var(--primary-color);
-            color: white;
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.2em;
-            transition: 0.2s;
-        }
-        .ai-send-btn:hover { background: #3e2723; transform: scale(1.1); }
-        .ai-send-btn:disabled { background: #bdbdbd; cursor: not-allowed; transform: none; }
 
         /* --- 容器通用 --- */
         .container-box {
@@ -430,14 +302,6 @@
             body { padding-top: 80px; }
             #yt-wrapper { display: none; position: fixed; bottom: 10px; right: 10px; width: 120px; height: 67px; top: auto; left: auto; transform: none; }
             #yt-wrapper.mobile-visible { display: block; }
-            
-            /* AI Chat RWD */
-            #ai-chat-window {
-                width: 90%;
-                right: 5%;
-                bottom: 10px;
-                height: 60vh;
-            }
         }
 
         @keyframes pulse { 0% { transform: scale(1); } 50% { transform: scale(1.05); } 100% { transform: scale(1); } }
@@ -471,27 +335,7 @@
                 <button id="mode-btn" class="mode-btn" onclick="changeMode()">
                     <span id="mode-icon">🔁</span>
                 </button>
-                
-                <!-- 新增 AI 書僮按鈕 -->
-                <button class="ai-tutor-btn" onclick="toggleChatWindow()">
-                    🤖 AI 書僮
-                </button>
             </div>
-        </div>
-    </div>
-
-    <!-- AI 書僮對話視窗 -->
-    <div id="ai-chat-window">
-        <div class="ai-header">
-            <div class="ai-header-title">🤖 AI 學習小幫手</div>
-            <button class="ai-close-btn" onclick="toggleChatWindow()">×</button>
-        </div>
-        <div id="ai-messages" class="ai-messages">
-            <div class="ai-msg ai">你好！我是你的 AI 書僮，有什麼問題都可以問我喔！</div>
-        </div>
-        <div class="ai-input-area">
-            <input type="text" id="ai-input" class="ai-input" placeholder="輸入問題..." onkeypress="handleAiKeypress(event)">
-            <button id="ai-send-btn" class="ai-send-btn" onclick="sendAiMessage()">➤</button>
         </div>
     </div>
 
@@ -649,10 +493,6 @@
 
     <script src="https://www.youtube.com/iframe_api"></script>
     <script>
-        // AI Tutor Configuration
-        const GEMINI_API_KEY = "AIzaSyBnQMlIrGOXszhPi0yERrzY30wuL4j-nks"; 
-        const GEMINI_API_URL = "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=";
-
         // 設定與全域變數
         // 修改點 2: 總題數 237 題，分為 12 關 (11*20 + 1*17)
         const LEVEL_CONFIG = [20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 20, 17];
@@ -687,103 +527,6 @@
             .catch(e => console.error("Error loading questions:", e));
 
         function getUserKey(key) { return APP_PREFIX + userName + '_' + key; }
-
-        // --- AI Tutor Logic ---
-        function toggleChatWindow() {
-            const win = document.getElementById('ai-chat-window');
-            if (win.style.display === 'none' || win.style.display === '') {
-                win.style.display = 'flex';
-                // Auto focus input
-                setTimeout(() => document.getElementById('ai-input').focus(), 100);
-            } else {
-                win.style.display = 'none';
-            }
-        }
-
-        function handleAiKeypress(e) {
-            if (e.key === 'Enter') {
-                sendAiMessage();
-            }
-        }
-
-        async function sendAiMessage() {
-            const inputEl = document.getElementById('ai-input');
-            const msgArea = document.getElementById('ai-messages');
-            const sendBtn = document.getElementById('ai-send-btn');
-            const userText = inputEl.value.trim();
-
-            if (!userText) return;
-            
-            if (!GEMINI_API_KEY) {
-                alert("請先在程式碼中設定 GEMINI_API_KEY 變數！");
-                return;
-            }
-
-            // Display user message
-            const userMsgDiv = document.createElement('div');
-            userMsgDiv.className = 'ai-msg user';
-            userMsgDiv.innerText = userText;
-            msgArea.appendChild(userMsgDiv);
-            
-            // Clear input and disable button
-            inputEl.value = "";
-            sendBtn.disabled = true;
-            msgArea.scrollTop = msgArea.scrollHeight;
-
-            // Show loading
-            const loadingDiv = document.createElement('div');
-            loadingDiv.className = 'ai-msg ai';
-            loadingDiv.id = 'ai-loading';
-            loadingDiv.innerText = "輸入中...";
-            msgArea.appendChild(loadingDiv);
-            msgArea.scrollTop = msgArea.scrollHeight;
-
-            try {
-                const response = await fetch(GEMINI_API_URL + GEMINI_API_KEY, {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({
-                        contents: [{ parts: [{ text: userText }] }],
-                        systemInstruction: {
-                            parts: [{ text: "你是一個 AI 學習小幫手。回答必須簡明扼要，直接切入核心，不要廢話。針對使用者的問題直接回答即可，不需要刻意將話題引導回原本的課程內容或特定主題。一律使用繁體中文。" }]
-                        }
-                    })
-                });
-
-                const data = await response.json();
-                
-                // Remove loading
-                loadingDiv.remove();
-
-                if (data.error) {
-                    throw new Error(data.error.message);
-                }
-
-                const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "抱歉，我現在無法回答。";
-                
-                const aiMsgDiv = document.createElement('div');
-                aiMsgDiv.className = 'ai-msg ai';
-                aiMsgDiv.innerText = aiText;
-                msgArea.appendChild(aiMsgDiv);
-
-            } catch (error) {
-                // Remove loading if exists
-                const loading = document.getElementById('ai-loading');
-                if(loading) loading.remove();
-                
-                const errorDiv = document.createElement('div');
-                errorDiv.className = 'ai-msg ai';
-                errorDiv.style.color = 'var(--wrong-color)';
-                errorDiv.innerText = "連線錯誤，請檢查 API Key 或網路連線。";
-                msgArea.appendChild(errorDiv);
-                console.error("AI Error:", error);
-            } finally {
-                sendBtn.disabled = false;
-                msgArea.scrollTop = msgArea.scrollHeight;
-                inputEl.focus();
-            }
-        }
-
 
         // --- 登入與導航 ---
         function selectAvatar(img, el) {
